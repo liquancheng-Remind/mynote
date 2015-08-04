@@ -18,7 +18,7 @@ jar封装成windows-serivce
 
 
 
-
+```java
 package cn.com.pengyue.util;
 
 import java.awt.event.ActionEvent;
@@ -232,3 +232,4 @@ public final class Delegate implements InvocationHandler{
 	}
 	
 }
+```
