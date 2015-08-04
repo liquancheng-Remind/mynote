@@ -1,0 +1,281 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Mynote by liquancheng-Remind</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">Mynote</h1>
+        <p class="header">记录下一些东西</p>
+
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/liquancheng-Remind/mynote/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/liquancheng-Remind/mynote/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/liquancheng-Remind/mynote">View On GitHub</a></li>
+        </ul>
+
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/liquancheng-Remind">liquancheng-Remind</a></p>
+
+
+      </header>
+      <section>
+        <h1>
+<a id="mynote" class="anchor" href="#mynote" aria-hidden="true"><span class="octicon octicon-link"></span></a>mynote</h1>
+
+<p>记录下一些东西</p>
+
+<p>jar封装成windows-serivce</p>
+
+<ul>
+<li>方式一： <a href="http://wrapper.tanukisoftware.com/doc/english/download.jsp">http://wrapper.tanukisoftware.com/doc/english/download.jsp</a> 有免费版
+
+<ul>
+<li> 没有使用过。</li>
+</ul>
+</li>
+<li>
+<p>方式二： <a href="http://commons.apache.org/proper/commons-daemon/">http://commons.apache.org/proper/commons-daemon/</a> 开源TOMCAT就是用这个做</p>
+
+<ul>
+<li>最近试了试，（比较二。没有以管理员进行命令操作） window其实非常好配置，先//IS//添加一个服务 ，直接点开manage的exe（需要重新命名为和服务一样的名字才可以打开不然会提示的没安装服务的）就可进行GUI设置了。</li>
+</ul>
+
+<p>---我来测试提交1：--别人修改了 - 提交给我，--我又也改过了。这里自己的话哦</p>
+</li>
+</ul>
+
+<p>我来测试提交1：别人修改了 提交给我，我又也改过了。---李泉阿斯顿发射点法防啊手动阀地方是学习学习</p>
+
+<div class="highlight highlight-java"><pre><span class="pl-k">package</span> <span class="pl-smi">cn.com.pengyue.util</span>;
+
+<span class="pl-k">import</span> <span class="pl-smi">java.awt.event.ActionEvent</span>;
+<span class="pl-k">import</span> <span class="pl-smi">java.awt.event.ActionListener</span>;
+<span class="pl-k">import</span> <span class="pl-smi">java.awt.event.ContainerEvent</span>;
+<span class="pl-k">import</span> <span class="pl-smi">java.awt.event.ContainerListener</span>;
+<span class="pl-k">import</span> <span class="pl-smi">java.awt.event.WindowEvent</span>;
+<span class="pl-k">import</span> <span class="pl-smi">java.awt.event.WindowListener</span>;
+<span class="pl-k">import</span> <span class="pl-smi">java.lang.reflect.InvocationHandler</span>;
+<span class="pl-k">import</span> <span class="pl-smi">java.lang.reflect.Method</span>;
+<span class="pl-k">import</span> <span class="pl-smi">java.lang.reflect.Proxy</span>;
+<span class="pl-k">import</span> <span class="pl-smi">java.util.Arrays</span>;
+<span class="pl-k">import</span> <span class="pl-smi">java.util.Hashtable</span>;
+<span class="pl-k">import</span> <span class="pl-smi">java.util.Map</span>;
+
+<span class="pl-k">import</span> <span class="pl-smi">javax.swing.JFrame</span>;
+
+<span class="pl-k">public</span> <span class="pl-k">final</span> <span class="pl-k">class</span> <span class="pl-en">Delegate</span> <span class="pl-k">implements</span> <span class="pl-e">InvocationHandler</span>{
+
+    <span class="pl-k">private</span> <span class="pl-k">Object</span>[] args;
+    <span class="pl-k">private</span> <span class="pl-smi">Object</span> realObj;
+    <span class="pl-k">private</span> <span class="pl-smi">String</span> delegateMethodName;
+    <span class="pl-k">private</span> <span class="pl-smi">String</span> realMethodName;
+    <span class="pl-k">private</span> <span class="pl-k">Class&lt;?&gt;</span> delegateInterface;
+    <span class="pl-k">private</span> <span class="pl-k">Class&lt;?&gt;</span> realClass;
+    <span class="pl-k">private</span> <span class="pl-k">Map&lt;<span class="pl-smi">Method</span>,<span class="pl-smi">Method</span>&gt;</span> methodMap;
+    <span class="pl-k">private</span> <span class="pl-k">Method</span>[] realMethods;
+    <span class="pl-k">private</span> <span class="pl-k">boolean</span> appendArgs;
+    <span class="pl-k">private</span> <span class="pl-k">Class</span>[] argsTypes; 
+    <span class="pl-k">private</span> <span class="pl-en">Delegate</span>(<span class="pl-k">Object</span>[] <span class="pl-v">args</span>, <span class="pl-smi">Object</span> <span class="pl-v">realObj</span>, <span class="pl-smi">String</span> <span class="pl-v">delegateMethodName</span>,
+            <span class="pl-smi">String</span> <span class="pl-v">realMethodName</span>, <span class="pl-k">Class&lt;?&gt;</span> <span class="pl-v">delegateInterface</span>,
+            <span class="pl-k">Class&lt;?&gt;</span> <span class="pl-v">realClass</span>) {
+        <span class="pl-v">super</span>();
+        <span class="pl-v">this</span><span class="pl-k">.</span>args <span class="pl-k">=</span> args;
+        <span class="pl-v">this</span><span class="pl-k">.</span>realObj <span class="pl-k">=</span> realObj;
+        <span class="pl-v">this</span><span class="pl-k">.</span>delegateMethodName <span class="pl-k">=</span> delegateMethodName;
+        <span class="pl-v">this</span><span class="pl-k">.</span>realMethodName <span class="pl-k">=</span> realMethodName;
+        <span class="pl-v">this</span><span class="pl-k">.</span>delegateInterface <span class="pl-k">=</span> delegateInterface;
+        <span class="pl-v">this</span><span class="pl-k">.</span>realClass <span class="pl-k">=</span> realClass;
+        <span class="pl-v">this</span><span class="pl-k">.</span>methodMap <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-k">Hashtable&lt;<span class="pl-smi">Method</span>, <span class="pl-smi">Method</span>&gt;</span>();
+    }
+
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">&lt;<span class="pl-smi">T</span>&gt;</span> T $(Object hasMethodObj,String methodName,String delegateMethodName,Class<span class="pl-k">&lt;<span class="pl-smi">T</span>&gt;</span> cls,Object... args){
+        <span class="pl-smi">Delegate</span> h <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Delegate</span>(args,hasMethodObj,delegateMethodName,methodName,cls,hasMethodObj<span class="pl-k">.</span>getClass());
+        <span class="pl-k">if</span>(delegateMethodName<span class="pl-k">==</span><span class="pl-c1">null</span>){
+            <span class="pl-k">Method</span>[] ms <span class="pl-k">=</span> h<span class="pl-k">.</span>delegateInterface<span class="pl-k">.</span>getDeclaredMethods();
+            <span class="pl-k">if</span>(ms<span class="pl-k">.</span>length<span class="pl-k">==</span><span class="pl-c1">1</span>){
+                h<span class="pl-k">.</span>delegateMethodName <span class="pl-k">=</span> ms[<span class="pl-c1">0</span>]<span class="pl-k">.</span>getName();
+            }
+        }
+        <span class="pl-k">if</span>(args<span class="pl-k">!=</span><span class="pl-c1">null</span> <span class="pl-k">&amp;&amp;</span> args<span class="pl-k">.</span>length<span class="pl-k">&gt;</span> <span class="pl-c1">0</span>){
+            h<span class="pl-k">.</span>appendArgs <span class="pl-k">=</span> <span class="pl-c1">true</span>;
+            <span class="pl-k">if</span>(methodName<span class="pl-k">==</span><span class="pl-c1">null</span>){
+                h<span class="pl-k">.</span>argsTypes <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Class</span>[args<span class="pl-k">.</span>length];
+                <span class="pl-k">for</span> (<span class="pl-k">int</span> i <span class="pl-k">=</span> <span class="pl-c1">0</span>; i <span class="pl-k">&lt;</span> args<span class="pl-k">.</span>length; i<span class="pl-k">++</span>) {
+                    h<span class="pl-k">.</span>argsTypes[i] <span class="pl-k">=</span> args[i]<span class="pl-k">.</span>getClass();
+                }
+            }
+        }
+        <span class="pl-k">return</span> (<span class="pl-smi">T</span>)<span class="pl-smi">Proxy</span><span class="pl-k">.</span>newProxyInstance(h<span class="pl-k">.</span>realClass<span class="pl-k">.</span>getClassLoader(), <span class="pl-k">new</span> <span class="pl-smi">Class</span>[]{cls}, h);
+    }
+
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">&lt;<span class="pl-smi">T</span>&gt;</span> T $(Object hasMethodObj,String methodName,Class<span class="pl-k">&lt;<span class="pl-smi">T</span>&gt;</span> cls,Object... args){
+        <span class="pl-k">return</span> $(hasMethodObj, methodName, <span class="pl-c1">null</span> ,cls,args);
+    }
+
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">&lt;<span class="pl-smi">T</span>&gt;</span> T $(Object hasMethodObj,Class<span class="pl-k">&lt;<span class="pl-smi">T</span>&gt;</span> cls,Object... args){
+        <span class="pl-k">return</span> $(hasMethodObj, <span class="pl-c1">null</span>,<span class="pl-c1">null</span> ,cls, args);
+    }
+
+
+    <span class="pl-k">@Override</span>
+    <span class="pl-k">public</span> <span class="pl-smi">Object</span> <span class="pl-en">invoke</span>(<span class="pl-smi">Object</span> <span class="pl-v">proxy</span>, <span class="pl-smi">Method</span> <span class="pl-v">method</span>, <span class="pl-k">Object</span>[] <span class="pl-v">args</span>)
+            <span class="pl-k">throws</span> <span class="pl-smi">Throwable</span> {
+        <span class="pl-c">//不是接口定义的方法 代理处理类执行。</span>
+        <span class="pl-k">if</span>(<span class="pl-k">!</span>method<span class="pl-k">.</span>getDeclaringClass()<span class="pl-k">.</span>equals(<span class="pl-v">this</span><span class="pl-k">.</span>delegateInterface)){
+            <span class="pl-k">return</span> method<span class="pl-k">.</span>invoke(<span class="pl-v">this</span>, args);
+        }
+        args <span class="pl-k">=</span> magreArgs(args);
+        <span class="pl-k">Class&lt;?&gt;</span>[] parameterTypes <span class="pl-k">=</span> magreParamterTypes(method<span class="pl-k">.</span>getParameterTypes());
+        <span class="pl-smi">Method</span> realMethod <span class="pl-k">=</span> method;
+        <span class="pl-k">if</span>(delegateMethodName<span class="pl-k">!=</span><span class="pl-c1">null</span> <span class="pl-k">&amp;&amp;</span> <span class="pl-k">!</span>method<span class="pl-k">.</span>getName()<span class="pl-k">.</span>equals(delegateMethodName)){<span class="pl-c">//不是要进行委托</span>
+            <span class="pl-k">return</span> returnDefaultVal(method);
+        }
+        <span class="pl-c">//没说明 委托到接口的什么方法 则从调用者参试寻找符合接口参数和返回值定义的方法</span>
+        <span class="pl-c">//存的搜索结果里找下，找到用存好的。</span>
+        realMethod <span class="pl-k">=</span> methodMap<span class="pl-k">.</span>get(method);
+        <span class="pl-k">if</span>(realMethod<span class="pl-k">==</span><span class="pl-c1">null</span>){
+            realMethod <span class="pl-k">=</span> searchMethodByParams(parameterTypes);
+            <span class="pl-k">if</span>(realMethod<span class="pl-k">==</span><span class="pl-c1">null</span>){
+                <span class="pl-k">return</span> returnDefaultVal(method);
+            }
+            method<span class="pl-k">.</span>setAccessible(<span class="pl-c1">true</span>);
+            <span class="pl-c">//缓存下来</span>
+            methodMap<span class="pl-k">.</span>put(method, realMethod);
+        }
+        args <span class="pl-k">=</span> checkArgs(args, realMethod<span class="pl-k">.</span>getParameterTypes(),method);
+        <span class="pl-k">return</span> realMethod<span class="pl-k">.</span>invoke(realObj, args);
+    }
+
+    <span class="pl-c">//检测 参数数量， 不够用默认值补齐,多了截断参数</span>
+    <span class="pl-k">private</span> <span class="pl-k">Object</span>[] <span class="pl-en">checkArgs</span>(<span class="pl-k">Object</span>[] <span class="pl-v">args</span>, <span class="pl-k">Class&lt;?&gt;</span>[] <span class="pl-v">parameterTypes</span>,<span class="pl-smi">Method</span> <span class="pl-v">method</span>) {
+        <span class="pl-k">if</span>(parameterTypes<span class="pl-k">.</span>length<span class="pl-k">!=</span>args<span class="pl-k">.</span>length){
+            <span class="pl-k">Object</span>[] newArgs <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Object</span>[parameterTypes<span class="pl-k">.</span>length];
+            <span class="pl-smi">System</span><span class="pl-k">.</span>arraycopy(args, <span class="pl-c1">0</span>, newArgs, <span class="pl-c1">0</span>, args<span class="pl-k">.</span>length);
+            <span class="pl-k">for</span> (<span class="pl-k">int</span> i <span class="pl-k">=</span> args<span class="pl-k">.</span>length; i <span class="pl-k">&lt;</span> newArgs<span class="pl-k">.</span>length; i<span class="pl-k">++</span>) {
+                <span class="pl-k">if</span>(i<span class="pl-k">==</span>args<span class="pl-k">.</span>length <span class="pl-k">&amp;&amp;</span> parameterTypes[i]<span class="pl-k">.</span>equals(<span class="pl-smi">Method</span><span class="pl-k">.</span>class)){
+                    newArgs[i] <span class="pl-k">=</span> method;
+                }<span class="pl-k">else</span>{
+                    newArgs[i] <span class="pl-k">=</span> returnDefaultVal(parameterTypes[i]);
+                }
+            }
+            args<span class="pl-k">=</span>newArgs;
+        }
+        <span class="pl-k">return</span> args;
+    }
+
+
+    <span class="pl-k">private</span> <span class="pl-smi">Object</span> <span class="pl-en">returnDefaultVal</span>(<span class="pl-k">Class&lt;?&gt;</span> <span class="pl-v">returnType</span>) {
+        <span class="pl-c">//默认返回 </span>
+        <span class="pl-k">if</span>(returnType<span class="pl-k">.</span>isPrimitive() <span class="pl-k">&amp;&amp;</span> <span class="pl-k">!</span>returnType<span class="pl-k">.</span>equals(<span class="pl-smi">Void</span><span class="pl-c1"><span class="pl-k">.</span>TYPE</span>)){
+            <span class="pl-k">if</span>(returnType<span class="pl-k">.</span>equals(<span class="pl-k">boolean</span><span class="pl-k">.</span>class)){
+                <span class="pl-k">return</span> <span class="pl-c1">false</span>;
+            }
+            <span class="pl-k">return</span> <span class="pl-c1">0</span>;
+        }
+        <span class="pl-k">return</span> <span class="pl-c1">null</span>;
+    }
+
+    <span class="pl-k">private</span> <span class="pl-smi">Object</span> <span class="pl-en">returnDefaultVal</span>(<span class="pl-smi">Method</span> <span class="pl-v">method</span>) {
+        <span class="pl-k">return</span> returnDefaultVal(method<span class="pl-k">.</span>getReturnType());
+    }
+
+    <span class="pl-k">private</span> <span class="pl-smi">Method</span> <span class="pl-en">searchMethodByParams</span>(<span class="pl-k">Class&lt;?&gt;</span>[] <span class="pl-v">parameterTypes</span>) {
+        <span class="pl-k">boolean</span> useNameSearch <span class="pl-k">=</span> <span class="pl-c1">false</span>;
+        <span class="pl-k">if</span>(<span class="pl-v">this</span><span class="pl-k">.</span>realMethodName<span class="pl-k">!=</span><span class="pl-c1">null</span>){
+            <span class="pl-k">try</span> {
+                <span class="pl-k">return</span> realClass<span class="pl-k">.</span>getDeclaredMethod(<span class="pl-v">this</span><span class="pl-k">.</span>realMethodName, parameterTypes);
+            } <span class="pl-k">catch</span> (<span class="pl-smi">SecurityException</span> e) {} <span class="pl-k">catch</span> (<span class="pl-smi">NoSuchMethodException</span> e) {}
+            useNameSearch <span class="pl-k">=</span> <span class="pl-c1">true</span>;
+        }
+        <span class="pl-k">if</span>(<span class="pl-v">this</span><span class="pl-k">.</span>realMethods<span class="pl-k">==</span><span class="pl-c1">null</span>){
+            <span class="pl-v">this</span><span class="pl-k">.</span>realMethods <span class="pl-k">=</span> realClass<span class="pl-k">.</span>getDeclaredMethods();
+        }
+        <span class="pl-k">for</span> (<span class="pl-smi">Method</span> realMethod <span class="pl-k">:</span> realMethods) {
+            <span class="pl-k">if</span>(useNameSearch){
+                <span class="pl-k">if</span>(realMethod<span class="pl-k">.</span>getName()<span class="pl-k">.</span>equals(realMethodName)){
+                    <span class="pl-k">return</span> realMethod;
+                }
+            }<span class="pl-k">else</span> <span class="pl-k">if</span>(isFirstSubArray(parameterTypes, realMethod<span class="pl-k">.</span>getParameterTypes())
+                    <span class="pl-k">||</span> isFirstSubArray(parameterTypes, realMethod<span class="pl-k">.</span>getParameterTypes())
+<span class="pl-c">//              &amp;&amp; Modifier.isPublic(realMethod.getModifiers())</span>
+            ){
+                <span class="pl-k">return</span> realMethod;
+            }
+        }
+        <span class="pl-k">return</span> <span class="pl-c1">null</span>;
+    }
+
+    <span class="pl-c">//特殊比较方法， 以第二参数 @param{ realParameterTypes } 只要第一参数是其中的前一段 完全匹配就认为一样的</span>
+    <span class="pl-k">private</span> <span class="pl-k">static</span> <span class="pl-k">boolean</span> <span class="pl-en">isFirstSubArray</span>(<span class="pl-k">Class</span>[] <span class="pl-v">methodParameterTypes</span>, <span class="pl-k">Class</span>[] <span class="pl-v">realParameterTypes</span>) {
+        <span class="pl-k">if</span> (methodParameterTypes<span class="pl-k">==</span>realParameterTypes)
+            <span class="pl-k">return</span> <span class="pl-c1">true</span>;
+
+        <span class="pl-k">int</span> length <span class="pl-k">=</span> methodParameterTypes<span class="pl-k">.</span>length;
+        <span class="pl-k">if</span>(realParameterTypes<span class="pl-k">.</span>length<span class="pl-k">&lt;</span>length)<span class="pl-k">return</span> <span class="pl-c1">false</span>;
+
+        <span class="pl-k">for</span> (<span class="pl-k">int</span> i<span class="pl-k">=</span><span class="pl-c1">0</span>; i<span class="pl-k">&lt;</span>length; i<span class="pl-k">++</span>) {
+            <span class="pl-smi">Class</span> p1 <span class="pl-k">=</span> methodParameterTypes[i];
+            <span class="pl-smi">Class</span> p2 <span class="pl-k">=</span> realParameterTypes[i];
+            <span class="pl-k">if</span> (<span class="pl-k">!</span>(p1<span class="pl-k">==</span><span class="pl-c1">null</span> <span class="pl-k">?</span> p2<span class="pl-k">==</span><span class="pl-c1">null</span> <span class="pl-k">:</span> p1<span class="pl-k">.</span>equals(p2)))
+                <span class="pl-k">return</span> <span class="pl-c1">false</span>;
+        }
+
+        <span class="pl-k">return</span> <span class="pl-c1">true</span>;
+    }
+
+    <span class="pl-k">private</span> <span class="pl-k">Object</span>[] <span class="pl-en">magreArgs</span>(<span class="pl-k">Object</span>[] <span class="pl-v">args</span>) {
+        <span class="pl-k">if</span>(<span class="pl-v">this</span><span class="pl-k">.</span>appendArgs){
+            <span class="pl-k">if</span>(args<span class="pl-k">==</span><span class="pl-c1">null</span> <span class="pl-k">||</span> args<span class="pl-k">.</span>length<span class="pl-k">==</span><span class="pl-c1">0</span>){
+                args <span class="pl-k">=</span> <span class="pl-v">this</span><span class="pl-k">.</span>args;
+            }<span class="pl-k">else</span>{
+                <span class="pl-k">Object</span>[] newArgs <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Object</span>[args<span class="pl-k">.</span>length<span class="pl-k">+</span><span class="pl-v">this</span><span class="pl-k">.</span>args<span class="pl-k">.</span>length];
+                <span class="pl-smi">System</span><span class="pl-k">.</span>arraycopy(args, <span class="pl-c1">0</span>, newArgs, <span class="pl-c1">0</span>, args<span class="pl-k">.</span>length);
+                <span class="pl-smi">System</span><span class="pl-k">.</span>arraycopy(<span class="pl-v">this</span><span class="pl-k">.</span>args, <span class="pl-c1">0</span>, newArgs, args<span class="pl-k">.</span>length, <span class="pl-v">this</span><span class="pl-k">.</span>args<span class="pl-k">.</span>length);
+                args <span class="pl-k">=</span> newArgs;
+            }
+        }
+        <span class="pl-k">return</span> args;
+    }
+
+    <span class="pl-k">private</span> <span class="pl-k">Class&lt;?&gt;</span>[] <span class="pl-en">magreParamterTypes</span>(<span class="pl-k">Class&lt;?&gt;</span>[] <span class="pl-v">parameterTypes</span>) {
+        <span class="pl-k">if</span>(<span class="pl-v">this</span><span class="pl-k">.</span>argsTypes<span class="pl-k">!=</span><span class="pl-c1">null</span> <span class="pl-k">&amp;&amp;</span> <span class="pl-v">this</span><span class="pl-k">.</span>argsTypes<span class="pl-k">.</span>length<span class="pl-k">&gt;</span><span class="pl-c1">0</span>){
+            <span class="pl-k">if</span>(parameterTypes<span class="pl-k">==</span><span class="pl-c1">null</span> <span class="pl-k">||</span> parameterTypes<span class="pl-k">.</span>length<span class="pl-k">==</span><span class="pl-c1">0</span>){
+                parameterTypes <span class="pl-k">=</span> <span class="pl-v">this</span><span class="pl-k">.</span>argsTypes;
+            }<span class="pl-k">else</span>{
+                <span class="pl-k">Class&lt;?&gt;</span>[] newTypes <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Class</span>[parameterTypes<span class="pl-k">.</span>length<span class="pl-k">+</span><span class="pl-v">this</span><span class="pl-k">.</span>argsTypes<span class="pl-k">.</span>length];
+                <span class="pl-smi">System</span><span class="pl-k">.</span>arraycopy(parameterTypes, <span class="pl-c1">0</span>, newTypes, <span class="pl-c1">0</span>, parameterTypes<span class="pl-k">.</span>length);
+                <span class="pl-smi">System</span><span class="pl-k">.</span>arraycopy(<span class="pl-v">this</span><span class="pl-k">.</span>argsTypes, <span class="pl-c1">0</span>, newTypes, parameterTypes<span class="pl-k">.</span>length, <span class="pl-v">this</span><span class="pl-k">.</span>argsTypes<span class="pl-k">.</span>length);
+                parameterTypes <span class="pl-k">=</span> newTypes;
+            }
+        }
+        <span class="pl-k">return</span> parameterTypes;
+    }
+
+    <span class="pl-k">protected</span> <span class="pl-k">final</span> <span class="pl-k">static</span> <span class="pl-k">synchronized</span> <span class="pl-k">void</span> <span class="pl-en">test</span>(){}
+
+    <span class="pl-k">@Override</span>
+    <span class="pl-k">public</span> <span class="pl-smi">String</span> <span class="pl-en">toString</span>() {
+        <span class="pl-k">return</span> <span class="pl-s"><span class="pl-pds">"</span>[委托]<span class="pl-pds">"</span></span><span class="pl-k">+</span>(delegateMethodName<span class="pl-k">==</span><span class="pl-c1">null</span><span class="pl-k">?</span><span class="pl-s"><span class="pl-pds">"</span>自动匹配<span class="pl-pds">"</span></span><span class="pl-k">:</span>delegateMethodName)<span class="pl-k">+</span><span class="pl-s"><span class="pl-pds">"</span> 实现：<span class="pl-pds">"</span></span><span class="pl-k">+</span> <span class="pl-v">this</span><span class="pl-k">.</span>realObj<span class="pl-k">.</span>toString();
+    }
+
+}</pre></div>
+      </section>
+      <footer>
+        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		
+  </body>
+</html>
