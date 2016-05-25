@@ -18,7 +18,7 @@ sh.SendKeys "quit{ENTER}"
 sh.SendKeys "{ENTER}"
 
 ```
--- 同理在window里 js 也是有宿主一样处理的 * (但是我喜欢用js一点) *
+-- 同理在window里 js 也是有宿主一样处理的 *(但是我喜欢用js一点)*
 
 ```
 var sh = WScript.CreateObject("WScript.Shell");
