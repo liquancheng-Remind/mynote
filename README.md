@@ -15,3 +15,4 @@ jar封装成windows-serivce
 
 我来测试提交1：别人修改了 提交给我，我又也改过了。---李泉阿斯顿发射点法防啊手动阀地方是学习学习
 
+mysql下载地址 https://cdn.mysql.com//Downloads/MySQL-5.5/mysql-5.5.54-winx64.msi
